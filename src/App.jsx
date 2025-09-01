@@ -7,7 +7,7 @@ function App() {
   // Main villa configuration state
   const [config, setConfig] = useState({
     bedrooms: 1,
-    storeys: 1,
+    storeys: 1.5,
     landSize: 100,
     buildStyle: 'modern',
     finishVariant: 'default'
