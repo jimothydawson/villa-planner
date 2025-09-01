@@ -25,10 +25,6 @@ const VisualPanel = ({ config }) => {
   const imageFilename = generateImageFilename()
   const imagePath = `/images/${imageFilename}`
 
-  // Debug logging
-  console.log('Image path:', imagePath)
-  console.log('Config:', config)
-
   // Reset loading state when image changes
   useEffect(() => {
     setImageLoading(true)
@@ -91,13 +87,7 @@ const VisualPanel = ({ config }) => {
         )}
       </div>
       
-      {/* Image Filename Display */}
-      <div className="p-4 bg-black text-white">
-        <div className="flex justify-between items-center">
-          <span className="text-sm font-bold">Current Image:</span>
-          <span className="font-mono text-sm">{imageFilename}</span>
-        </div>
-      </div>
+
     </div>
   )
 }
