@@ -20,9 +20,30 @@ const ConfigurationPanel = ({ config, updateConfig, floorSpace, financials }) =>
     'moroccan-2': ['default']
   }
 
+  // Available land sizes for each style/storey combination
+  const availableLandSizes = {
+    'modern-1': [100],
+    'modern-1.5': [100],
+    'modern-2': [100],
+    'balinese-1': [100],
+    'balinese-1.5': [100],
+    'balinese-2': [100, 200],
+    'japanese-1': [100],
+    'japanese-1.5': [100],
+    'japanese-2': [100],
+    'moroccan-1': [100],
+    'moroccan-1.5': [100],
+    'moroccan-2': [100]
+  }
+
   const getAvailableVariants = () => {
     const key = `${config.buildStyle}-${config.storeys}`
     return availableVariants[key] || ['default']
+  }
+
+  const getAvailableLandSizes = () => {
+    const key = `${config.buildStyle}-${config.storeys}`
+    return availableLandSizes[key] || [100]
   }
 
   const RadioGroup = ({ label, options, value, onChange, name }) => (
@@ -78,7 +99,15 @@ const ConfigurationPanel = ({ config, updateConfig, floorSpace, financials }) =>
     if (!availableVariants.includes(config.finishVariant)) {
       updateConfig('finishVariant', 'default')
     }
-  }, [config.buildStyle, config.storeys])
+  }, [config.buildStyle, config.storeys, config.finishVariant, updateConfig])
+
+  // Reset landSize if current selection is no longer valid
+  useEffect(() => {
+    const availableLandSizes = getAvailableLandSizes()
+    if (!availableLandSizes.includes(config.landSize)) {
+      updateConfig('landSize', availableLandSizes[0])
+    }
+  }, [config.buildStyle, config.storeys, config.landSize, updateConfig])
 
   return (
     <div className="space-y-6">
@@ -196,23 +225,27 @@ const ConfigurationPanel = ({ config, updateConfig, floorSpace, financials }) =>
         <div className="mb-6">
           <h3 className="text-lg font-bold mb-3 text-black">Land Size</h3>
           <div className="flex justify-between flex-nowrap">
-            {landSizeOptions.map((option) => (
-              <label
-                key={option.value}
-                className={`radio-option ${config.landSize === option.value ? 'selected' : ''}`}
-                style={{ width: '45%' }}
-              >
-                <input
-                  type="radio"
-                  name="landSize"
-                  value={option.value}
-                  checked={config.landSize === option.value}
-                  onChange={() => updateConfig('landSize', option.value)}
-                  className="sr-only"
-                />
-                <span className="text-sm font-medium">{option.label}</span>
-              </label>
-            ))}
+            {getAvailableLandSizes().map((size) => {
+              const option = { value: size, label: `${size}m²` }
+              
+              return (
+                <label
+                  key={option.value}
+                  className={`radio-option ${config.landSize === option.value ? 'selected' : ''}`}
+                  style={{ width: '45%' }}
+                >
+                  <input
+                    type="radio"
+                    name="landSize"
+                    value={option.value}
+                    checked={config.landSize === option.value}
+                    onChange={() => updateConfig('landSize', option.value)}
+                    className="sr-only"
+                  />
+                  <span className="text-sm font-medium">{option.label}</span>
+                </label>
+              )
+            })}
           </div>
         </div>
       </div>
